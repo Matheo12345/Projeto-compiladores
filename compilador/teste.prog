@@ -1,0 +1,67 @@
+// Programa de teste — cobre todos os tokens da linguagem
+programa
+
+// Declarações de variáveis (3 tipos)
+inteiro a.
+inteiro b.
+inteiro resultado.
+decimal media.
+texto mensagem.
+
+// Entrada de dados
+escreva("Digite o primeiro numero").
+leia(a).
+escreva("Digite o segundo numero").
+leia(b).
+
+// Atribuição e expressão matemática com precedência
+resultado := a + b * 2.
+media := (a + b) / 2.
+
+// Estrutura if/else
+se (a > b) {
+    escreva("A e maior").
+    resultado := a - b.
+} senao {
+    escreva("B e maior ou igual").
+    resultado := b - a.
+}
+
+// if encadeado
+se (resultado > 10) {
+    escreva("Grande").
+} senao {
+    se (resultado > 5) {
+        escreva("Medio").
+    } senao {
+        escreva("Pequeno").
+    }
+}
+
+// Estrutura enquanto (while)
+inteiro i.
+i := 0.
+enquanto (i < resultado) {
+    escreva(i).
+    i := i + 1.
+}
+
+// Estrutura faca/enquanto (do-while)
+faca {
+    escreva("Pelo menos uma vez").
+    i := i - 1.
+} enquanto (i > 0).
+
+// Estrutura para (for)
+inteiro j.
+para (j := 0 ; j < 5 ; j := j + 1) {
+    escreva(j).
+}
+
+// Operadores relacionais variados
+se (a <= b) { escreva("a menor ou igual b"). }
+se (a >= b) { escreva("a maior ou igual b"). }
+se (a == b) { escreva("iguais"). }
+se (a != b) { escreva("diferentes"). }
+
+fimprog.
