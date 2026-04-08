@@ -2,6 +2,12 @@
 
 Projeto da disciplina de Compiladores (CC6252), Prof. Charles Ferreira -- FEI.
 
+## Integrantes do grupo
+
+| Nome                                  | RA             |
+|---------------------------------------|----------------|
+| Matheo Campanelli de Aquino Esteves   | 22.123.045-1   |
+
 Implementacao de um compilador completo para uma linguagem imperativa criada pelo grupo, escrita em portugues. O compilador e desenvolvido em Python e traduz programas na linguagem criada para codigo em C.
 
 ---
