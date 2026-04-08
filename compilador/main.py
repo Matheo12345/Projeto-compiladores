@@ -9,6 +9,10 @@
 
 import sys
 import os
+
+# Garante que o terminal exiba acentos corretamente no Windows
+sys.stdout.reconfigure(encoding='utf-8')
+
 from lexico import Lexico
 
 

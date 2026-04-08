@@ -6,6 +6,9 @@
 # regulares (como 're'). Todo o reconhecimento é feito caractere a caractere.
 # =============================================================================
 
+import sys
+sys.stdout.reconfigure(encoding='utf-8')
+
 from tokens import (
     Token, PALAVRAS_RESERVADAS,
     ID, NUM_INT, NUM_DEC, TEXTO_LIT,
