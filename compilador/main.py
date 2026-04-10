@@ -1,6 +1,6 @@
-﻿# =============================================================================
-# main.py — Ponto de entrada do compilador
-# Compilador — CC6252 | Prof. Charles Ferreira | FEI
+# =============================================================================
+# main.py -- Ponto de entrada do compilador
+# Compilador -- CC6252 | Prof. Charles Ferreira | FEI
 #
 # Uso:
 #   python main.py <arquivo.prog>
@@ -13,7 +13,8 @@ import os
 # Garante que o terminal exiba acentos corretamente no Windows
 sys.stdout.reconfigure(encoding='utf-8')
 
-from lexico import Lexico
+from lexico    import Lexico
+from sintatico import Parser, ErroSintatico
 
 
 def main():
@@ -26,7 +27,7 @@ def main():
     caminho = sys.argv[1]
 
     if not os.path.exists(caminho):
-        print(f'Erro: arquivo "{caminho}" não encontrado.')
+        print(f'Erro: arquivo "{caminho}" nao encontrado.')
         sys.exit(1)
 
     # --- Leitura do arquivo fonte ---
@@ -36,18 +37,39 @@ def main():
     print(f'\nCompilando: {caminho}')
     print(f'Tamanho: {len(codigo)} caracteres\n')
 
-    # --- Fase 1: Análise Léxica ---
+    # -------------------------------------------------------------------------
+    # Fase 1: Analise Lexica
+    # Transforma o codigo-fonte em uma lista de tokens.
+    # -------------------------------------------------------------------------
     lexico = Lexico(codigo)
     tokens = lexico.tokenizar()
     lexico.imprimir_tokens(tokens)
 
-    # Verifica se houve erros léxicos
+    # Se houve erros lexicos, nao faz sentido continuar para o parser
     if lexico.erros:
-        print(f'\nCompilação interrompida: {len(lexico.erros)} erro(s) léxico(s).')
+        print(f'\nCompilacao interrompida: {len(lexico.erros)} erro(s) lexico(s).')
         sys.exit(1)
 
-    print('\nAnálise léxica concluída com sucesso.')
-    print('(Próxima etapa: Análise Sintática)')
+    print('\nAnalise lexica concluida com sucesso.')
+
+    # -------------------------------------------------------------------------
+    # Fase 2: Analise Sintatica
+    # Consome a lista de tokens e constroi a arvore de derivacao.
+    # -------------------------------------------------------------------------
+    print('\n' + '=' * 50)
+    print(f'{"ARVORE DE DERIVACAO":^50}')
+    print('=' * 50)
+
+    try:
+        parser = Parser(tokens)
+        arvore = parser.analisar()
+        arvore.imprimir()               # imprime a arvore identada
+        print('=' * 50)
+        print('\nAnalise sintatica concluida com sucesso.')
+        print('(Proxima etapa: Geracao de Codigo)')
+    except ErroSintatico:
+        print('\nCompilacao interrompida por erro sintatico.')
+        sys.exit(1)
 
 
 if __name__ == '__main__':
