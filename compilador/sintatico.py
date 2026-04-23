@@ -1,6 +1,6 @@
 # =============================================================================
 # sintatico.py -- Analisador Sintatico (Parser)
-# Compilador -- CC6252 | Prof. Charles Ferreira | FEI
+# Compilador -- CC6252 | Prof. Diogo F. S. Ramos | FEI
 #
 # Abordagem: Descendente Recursivo -- uma funcao por regra da gramatica.
 # Recebe a lista de tokens gerada pelo lexico e constroi a arvore de derivacao.
@@ -13,6 +13,7 @@ from tokens import (
     PROGRAMA, FIMPROG,
     INTEIRO, DECIMAL, TEXTO_TIPO,
     SE, SENAO, ENQUANTO, FACA, PARA, LEIA, ESCREVA,
+    VERDADEIRO, FALSO,
     ID, NUM_INT, NUM_DEC, TEXTO_LIT,
     ATRIB,
     MAIS, MENOS, MULT, DIV,
@@ -374,22 +375,21 @@ class Parser:
         self._consome(PONTO)
         return No('cmdEscreva', [no_conteudo])
 
-    # --- conteudo -> TEXTO_LIT | ID | expr ---
+    # --- conteudo -> TEXTO_LIT | expr ---
     def _conteudo(self) -> No:
         """
         O que pode ser passado para escreva():
           - Um literal de texto: "mensagem"
-          - Um identificador: x
-          - Uma expressao: a + b
-        Para diferenciar ID de expr, usamos o lookahead (token seguinte).
-        Se apos o ID vier ')' e fim de conteudo, e so um ID. Caso contrario, e expr.
+          - Uma expressao: a + b, x, verdadeiro, (a * 2)
+        Nota: ID e um caso particular de expr (via fator -> ID),
+        portanto nao precisa ser listado separadamente na regra.
         """
         if self._tipo_atual() == TEXTO_LIT:
             tok = self._consome(TEXTO_LIT)
             return No('textoLit', valor=tok.valor)
         else:
-            # Tanto ID isolado quanto expressoes passam por _expr()
-            # O parser de expr trata os dois casos corretamente
+            # ID, numeros, expressoes aritmeticas e booleanos
+            # sao todos tratados por _expr() via _fator()
             return self._expr()
 
     # -----------------------------------------------------------------------
@@ -490,13 +490,14 @@ class Parser:
         else:
             return no_esq   # producao vazia
 
-    # --- fator -> NUM_INT | NUM_DEC | ID | '(' expr ')' ---
+    # --- fator -> NUM_INT | NUM_DEC | 'verdadeiro' | 'falso' | ID | '(' expr ')' ---
     def _fator(self) -> No:
         """
         Unidade basica de uma expressao (maior precedencia de todos).
         Pode ser:
           - Um numero inteiro: 42
           - Um numero decimal: 3.14
+          - Um literal booleano: verdadeiro, falso
           - Um identificador: x
           - Uma sub-expressao entre parenteses: (a + b)
         """
@@ -509,6 +510,16 @@ class Parser:
         elif tipo == NUM_DEC:
             tok = self._consome(NUM_DEC)
             return No('numDec', valor=tok.valor)
+
+        elif tipo == VERDADEIRO:
+            # Literal booleano verdadeiro
+            tok = self._consome(VERDADEIRO)
+            return No('bool', valor=tok.valor)
+
+        elif tipo == FALSO:
+            # Literal booleano falso
+            tok = self._consome(FALSO)
+            return No('bool', valor=tok.valor)
 
         elif tipo == ID:
             tok = self._consome(ID)

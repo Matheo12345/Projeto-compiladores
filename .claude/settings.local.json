@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -c \"from reportlab.lib.pagesizes import A4; print\\('reportlab ok'\\)\")",
+      "Bash(pip install:*)",
+      "Bash(python gerar_pdf.py)",
+      "Bash(python -c \"import os; s=os.path.getsize\\('entrega_gramatica.pdf'\\); print\\(f'Arquivo gerado: {s/1024:.1f} KB, {s} bytes'\\)\")",
+      "Bash(python -c ' *)",
+      "Bash(python -c \"import os; s=os.path.getsize\\(r'C:\\\\Users\\\\Matheo Campanelli\\\\Documents\\\\FEI\\\\Compiladores\\\\Projeto\\\\Projeto-compiladores\\\\entrega_gramatica.pdf'\\); print\\(f'{s/1024:.1f} KB'\\)\")",
+      "Bash(python main.py teste.prog)"
+    ]
+  }
+}

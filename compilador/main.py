@@ -1,6 +1,6 @@
 # =============================================================================
 # main.py -- Ponto de entrada do compilador
-# Compilador -- CC6252 | Prof. Charles Ferreira | FEI
+# Compilador -- CC6252 | Prof. Diogo F. S. Ramos | FEI
 #
 # Uso:
 #   python main.py <arquivo.prog>

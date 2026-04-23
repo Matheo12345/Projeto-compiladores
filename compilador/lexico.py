@@ -1,6 +1,6 @@
 ﻿# =============================================================================
 # lexico.py — Analisador Léxico
-# Compilador — CC6252 | Prof. Charles Ferreira | FEI
+# Compilador — CC6252 | Prof. Diogo F. S. Ramos | FEI
 #
 # IMPORTANTE: Este léxico NÃO utiliza nenhuma biblioteca de expressões
 # regulares (como 're'). Todo o reconhecimento é feito caractere a caractere.
@@ -111,7 +111,11 @@ class Lexico:
                                             self._atual() == '_'):
             palavra += self._avanca()
 
-        # Verifica se é palavra reservada (comparação case-insensitive)
+        # Verifica se e palavra reservada.
+        # A comparacao e case-insensitive: 'PROGRAMA', 'Programa' e 'programa'
+        # sao todos reconhecidos como o token PROGRAMA.
+        # Isso e uma decisao de design da linguagem — palavras reservadas
+        # nao diferenciam maiusculas de minusculas.
         tipo = PALAVRAS_RESERVADAS.get(palavra.lower(), ID)
         return Token(tipo, palavra, inicio)
 

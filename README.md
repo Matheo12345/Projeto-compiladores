@@ -1,6 +1,6 @@
 # Compilador -- CC6252
 
-Projeto da disciplina de Compiladores (CC6252), Prof. Charles Ferreira -- FEI.
+Projeto da disciplina de Compiladores (CC6252), Prof. Diogo F. S. Ramos -- FEI.
 
 ## Integrantes do grupo
 
@@ -139,7 +139,7 @@ cmdPara     ->  'para' '(' ID ':=' expr ';' exprRel ';' ID ':=' expr ')' '{' blo
 cmdLeia     ->  'leia' '(' ID ')' '.'
 
 cmdEscreva  ->  'escreva' '(' conteudo ')' '.'
-conteudo    ->  TEXTO_LIT  |  ID  |  expr
+conteudo    ->  TEXTO_LIT  |  expr
 
 exprRel     ->  expr opRel expr
 opRel       ->  '<'  |  '>'  |  '<='  |  '>='  |  '=='  |  '!='
@@ -150,11 +150,12 @@ exprLinha   ->  '+' termo exprLinha  |  '-' termo exprLinha  |  <vazio>
 termo       ->  fator termoLinha
 termoLinha  ->  '*' fator termoLinha  |  '/' fator termoLinha  |  <vazio>
 
-fator       ->  NUM_INT  |  NUM_DEC  |  ID  |  '(' expr ')'
+fator       ->  NUM_INT  |  NUM_DEC  |  'verdadeiro'  |  'falso'  |  ID  |  '(' expr ')'
 ```
 
 > `expr/exprLinha` e `termo/termoLinha` eliminam a recursividade a esquerda de `expr -> expr + termo`.
 > Isso garante que `*` e `/` tenham precedencia sobre `+` e `-`.
+> Palavras reservadas sao case-insensitive: `PROGRAMA`, `Programa` e `programa` sao equivalentes.
 
 ---
 
