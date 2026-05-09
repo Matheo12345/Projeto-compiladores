@@ -11,6 +11,7 @@ import sys
 import os
 from lexico import Lexico
 from sintatico import Parser
+from gerador import Gerador
 
 
 def main():
@@ -58,7 +59,23 @@ def main():
 
     arvore.imprimir()
     print('\nAnálise sintática concluída com sucesso.')
-    print('(Próxima etapa: Geração de Código)')
+
+    # --- Fase 3: Geração de Código C ---
+    caminho_saida = os.path.splitext(caminho)[0] + '.c'
+    gerador = Gerador(arvore)
+    gerador.gerar()
+
+    if gerador._erros:
+        print(f'\nCompilação interrompida: {len(gerador._erros)} erro(s) no gerador.')
+        sys.exit(1)
+
+    print('\n' + '=' * 50)
+    print(f'{"CÓDIGO C GERADO":^50}')
+    print('=' * 50)
+    print('\n'.join(gerador._linhas))
+    print('=' * 50)
+
+    gerador.escrever_arquivo(caminho_saida)
 
 
 if __name__ == '__main__':
