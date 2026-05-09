@@ -10,6 +10,7 @@
 import sys
 import os
 from lexico import Lexico
+from sintatico import Parser
 
 
 def main():
@@ -37,13 +38,27 @@ def main():
     tokens = lexico.tokenizar()
     lexico.imprimir_tokens(tokens)
 
-    # Verifica se houve erros léxicos
     if lexico.erros:
         print(f'\nCompilação interrompida: {len(lexico.erros)} erro(s) léxico(s).')
         sys.exit(1)
 
     print('\nAnálise léxica concluída com sucesso.')
-    print('(Próxima etapa: Análise Sintática)')
+
+    # --- Fase 2: Análise Sintática ---
+    print('\n' + '=' * 50)
+    print(f'{"ÁRVORE DE DERIVAÇÃO":^50}')
+    print('=' * 50)
+
+    parser = Parser(tokens)
+    arvore = parser.analisar()
+
+    if parser.erros:
+        print(f'\nCompilação interrompida: {len(parser.erros)} erro(s) sintático(s).')
+        sys.exit(1)
+
+    arvore.imprimir()
+    print('\nAnálise sintática concluída com sucesso.')
+    print('(Próxima etapa: Geração de Código)')
 
 
 if __name__ == '__main__':
