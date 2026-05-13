@@ -1,6 +1,6 @@
 # =============================================================================
 # sintatico.py — Analisador Sintático (Parser Descendente Recursivo)
-# Compilador — CC6252 | Prof. Charles Ferreira | FEI
+# Compilador — CC6252 | Prof. Diogo F. S. Ramos | FEI
 #
 # Abordagem: uma função por regra gramatical.
 # A gramática não possui recursividade à esquerda (já eliminada em expr/expr').

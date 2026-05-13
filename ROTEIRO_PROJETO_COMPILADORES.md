@@ -1,6 +1,6 @@
 ﻿﻿# Roteiro de Desenvolvimento — Compilador (CC6252)
 
-> **Prof. Charles Ferreira** | FEI  
+> **Prof. Diogo F. S. Ramos** | FEI  
 > Documentação: **11/05/2026** · Projeto: **13/05/2026** · Apresentação: **13–14/05/2026**  
 > Hoje: **08/04/2026** → Você tem ~5 semanas.
 
@@ -506,4 +506,4 @@ fimprog.
 
 ---
 
-*Roteiro elaborado com base no enunciado do Prof. Charles Ferreira e nos conteúdos das aulas (Introdução, Análise Léxica, Gramáticas, Análise Sintática Descendente Recursiva) — FEI, CC6252, 2026.*
+*Roteiro elaborado com base no enunciado do Prof. Diogo F. S. Ramos e nos conteúdos das aulas (Introdução, Análise Léxica, Gramáticas, Análise Sintática Descendente Recursiva) — FEI, CC6252, 2026.*

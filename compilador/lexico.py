@@ -1,6 +1,6 @@
 # =============================================================================
 # lexico.py — Analisador Léxico
-# Compilador — CC6252 | Prof. Charles Ferreira | FEI
+# Compilador — CC6252 | Prof. Diogo F. S. Ramos | FEI
 #
 # IMPORTANTE: Este léxico NÃO utiliza nenhuma biblioteca de expressões
 # regulares (como 're'). Todo o reconhecimento é feito caractere a caractere.
