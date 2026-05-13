@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Documentação — Compilador CC6252</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+    font-size: 11pt;
+    line-height: 1.7;
+    color: #1a1a2e;
+    background: #fff;
+  }
+
+  /* ── Capa ── */
+  .capa {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 60px 40px;
+    border-bottom: 3px solid #1a1a2e;
+    page-break-after: always;
+  }
+  .capa .instituicao {
+    font-size: 13pt;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #555;
+    margin-bottom: 8px;
+  }
+  .capa .curso {
+    font-size: 11pt;
+    color: #777;
+    margin-bottom: 60px;
+  }
+  .capa .titulo {
+    font-size: 28pt;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #1a1a2e;
+    margin-bottom: 12px;
+  }
+  .capa .subtitulo {
+    font-size: 14pt;
+    font-weight: 400;
+    color: #444;
+    margin-bottom: 60px;
+  }
+  .capa .separador {
+    width: 60px;
+    height: 3px;
+    background: #1a1a2e;
+    margin: 0 auto 60px;
+  }
+  .capa .info-aluno {
+    font-size: 12pt;
+    line-height: 2;
+    color: #333;
+  }
+  .capa .info-aluno strong { font-weight: 600; }
+  .capa .rodape-capa {
+    margin-top: 60px;
+    font-size: 10pt;
+    color: #888;
+  }
+
+  /* ── Layout geral ── */
+  .conteudo {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 50px 60px;
+  }
+
+  /* ── Sumário ── */
+  .sumario {
+    page-break-after: always;
+    padding: 40px 0;
+  }
+  .sumario h2 {
+    font-size: 18pt;
+    font-weight: 700;
+    margin-bottom: 28px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #1a1a2e;
+  }
+  .sumario ol {
+    list-style: none;
+    counter-reset: sumario;
+  }
+  .sumario > ol > li {
+    counter-increment: sumario;
+    margin-bottom: 6px;
+  }
+  .sumario > ol > li::before {
+    content: counter(sumario) ". ";
+    font-weight: 600;
+  }
+  .sumario ol li {
+    font-size: 11pt;
+    padding: 3px 0;
+  }
+  .sumario ol ol {
+    margin-left: 24px;
+    counter-reset: subsumario;
+  }
+  .sumario ol ol li {
+    counter-increment: subsumario;
+    font-weight: 400;
+    color: #444;
+  }
+  .sumario ol ol li::before {
+    content: counter(sumario) "." counter(subsumario) " ";
+    font-weight: 500;
+  }
+
+  /* ── Seções ── */
+  h1 {
+    font-size: 20pt;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin: 48px 0 16px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #1a1a2e;
+    page-break-before: always;
+  }
+  h1:first-of-type { page-break-before: avoid; }
+
+  h2 {
+    font-size: 14pt;
+    font-weight: 600;
+    color: #1a1a2e;
+    margin: 32px 0 12px;
+  }
+
+  h3 {
+    font-size: 12pt;
+    font-weight: 600;
+    color: #333;
+    margin: 24px 0 8px;
+  }
+
+  p { margin-bottom: 12px; }
+
+  ul, ol {
+    margin: 10px 0 14px 24px;
+  }
+  li { margin-bottom: 5px; }
+
+  /* ── Código ── */
+  pre {
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 9pt;
+    background: #f4f4f8;
+    border: 1px solid #dde;
+    border-left: 4px solid #1a1a2e;
+    border-radius: 4px;
+    padding: 16px 20px;
+    overflow-x: auto;
+    margin: 14px 0 20px;
+    line-height: 1.5;
+    white-space: pre;
+  }
+  code {
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 9.5pt;
+    background: #f0f0f5;
+    border-radius: 3px;
+    padding: 1px 5px;
+    color: #1a1a2e;
+  }
+
+  /* ── Tabelas ── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0 24px;
+    font-size: 10pt;
+  }
+  th {
+    background: #1a1a2e;
+    color: #fff;
+    font-weight: 600;
+    padding: 10px 14px;
+    text-align: left;
+  }
+  td {
+    padding: 8px 14px;
+    border-bottom: 1px solid #e0e0e8;
+    vertical-align: top;
+  }
+  tr:nth-child(even) td { background: #f8f8fc; }
+
+  /* ── Destaque / callout ── */
+  .callout {
+    background: #f0f4ff;
+    border-left: 4px solid #3a5fd9;
+    border-radius: 4px;
+    padding: 14px 18px;
+    margin: 16px 0;
+    font-size: 10.5pt;
+  }
+
+  /* ── Diagrama de fases ── */
+  .pipeline {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    margin: 28px 0;
+    flex-wrap: wrap;
+  }
+  .fase {
+    background: #1a1a2e;
+    color: #fff;
+    padding: 14px 20px;
+    text-align: center;
+    font-size: 10pt;
+    font-weight: 600;
+    min-width: 120px;
+  }
+  .fase small {
+    display: block;
+    font-weight: 400;
+    font-size: 8.5pt;
+    opacity: 0.75;
+    margin-top: 3px;
+  }
+  .seta {
+    font-size: 18pt;
+    color: #1a1a2e;
+    padding: 0 4px;
+    font-weight: 700;
+  }
+
+  /* ── Print ── */
+  @media print {
+    body { font-size: 10.5pt; }
+    .capa { min-height: 100vh; }
+    pre { font-size: 8.5pt; }
+    h1 { page-break-before: always; }
+    .no-break { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════
+     CAPA
+════════════════════════════════════════════ -->
+<div class="capa">
+  <div class="instituicao">Centro Universitário FEI</div>
+  <div class="curso">Engenharia de Computação &nbsp;·&nbsp; CC6252 — Compiladores</div>
+
+  <div style="margin: 40px 0;">
+    <div style="font-size:48pt; margin-bottom:16px;">⚙</div>
+    <div class="titulo">Projeto de Compilador</div>
+    <div class="subtitulo">Linguagem Fonte → Código C</div>
+  </div>
+
+  <div class="separador"></div>
+
+  <div class="info-aluno">
+    <strong>Alunos:</strong><br>
+    Edson Pedreira de Oliveira Júnior &nbsp;·&nbsp; RA 22.123.038-6<br>
+    Henrique Bassan Rebechi &nbsp;·&nbsp; RA 22.223.083-1<br>
+    Matheo Campanelli de Aquino Esteves &nbsp;·&nbsp; RA 22.123.045-1<br>
+    Diogo Santos Linna &nbsp;·&nbsp; RA 22.125.069-9<br>
+    <br>
+    <strong>Professor:</strong> Diogo F. S. Ramos<br>
+    <strong>Disciplina:</strong> CC6252 — Compiladores<br>
+    <strong>Linguagem de implementação:</strong> Python 3
+  </div>
+
+  <div class="rodape-capa">São Bernardo do Campo — 2025</div>
+</div>
+
+
+<!-- ════════════════════════════════════════════
+     CONTEÚDO
+════════════════════════════════════════════ -->
+<div class="conteudo">
+
+<!-- SUMÁRIO -->
+<div class="sumario">
+  <h2>Sumário</h2>
+  <ol>
+    <li>Introdução
+      <ol>
+        <li>Objetivo</li>
+        <li>Visão geral da arquitetura</li>
+      </ol>
+    </li>
+    <li>A Linguagem Fonte
+      <ol>
+        <li>Tipos de dados</li>
+        <li>Palavras reservadas</li>
+        <li>Operadores</li>
+        <li>Estrutura de um programa</li>
+      </ol>
+    </li>
+    <li>Gramática Formal
+      <ol>
+        <li>Gramática livre de contexto</li>
+        <li>Observações sobre a gramática</li>
+      </ol>
+    </li>
+    <li>Análise Léxica
+      <ol>
+        <li>Funcionamento</li>
+        <li>Tokens reconhecidos</li>
+        <li>Tratamento de erros léxicos</li>
+      </ol>
+    </li>
+    <li>Análise Sintática
+      <ol>
+        <li>Estratégia: parser descendente recursivo</li>
+        <li>Árvore de derivação (AST)</li>
+        <li>Tratamento de erros sintáticos</li>
+      </ol>
+    </li>
+    <li>Geração de Código C
+      <ol>
+        <li>Estratégia em duas passagens</li>
+        <li>Tabela de símbolos</li>
+        <li>Mapeamento de construções</li>
+      </ol>
+    </li>
+    <li>Estrutura dos Arquivos</li>
+    <li>Exemplo Completo</li>
+    <li>Como Executar</li>
+    <li>Conclusão</li>
+  </ol>
+</div>
+
+
+<!-- ════════ 1. INTRODUÇÃO ════════ -->
+<h1>1. Introdução</h1>
+
+<h2>1.1 Objetivo</h2>
+<p>
+  Este trabalho implementa um <strong>compilador completo</strong> para uma linguagem de programação
+  estruturada didática, com tradução para código C. O compilador abrange três fases clássicas:
+  análise léxica, análise sintática e geração de código, todas implementadas em Python 3
+  <strong>sem o uso de bibliotecas de expressões regulares ou geradores automáticos</strong>
+  (como PLY, ANTLR ou similares) — todo o reconhecimento é feito manualmente, caractere a caractere.
+</p>
+
+<h2>1.2 Visão geral da arquitetura</h2>
+
+<div class="pipeline">
+  <div class="fase">Código-fonte<small>.prog</small></div>
+  <div class="seta">→</div>
+  <div class="fase">Analisador<br>Léxico<small>lexico.py</small></div>
+  <div class="seta">→</div>
+  <div class="fase">Lista de<br>Tokens<small>tokens.py</small></div>
+  <div class="seta">→</div>
+  <div class="fase">Analisador<br>Sintático<small>sintatico.py</small></div>
+  <div class="seta">→</div>
+  <div class="fase">Árvore AST<small>nós</small></div>
+  <div class="seta">→</div>
+  <div class="fase">Gerador<br>de Código<small>gerador.py</small></div>
+  <div class="seta">→</div>
+  <div class="fase">Código C<small>.c</small></div>
+</div>
+
+<p>O ponto de entrada é <code>main.py</code>, que coordena as três fases em sequência e
+interrompe a compilação caso qualquer fase reporte erros.</p>
+
+
+<!-- ════════ 2. A LINGUAGEM FONTE ════════ -->
+<h1>2. A Linguagem Fonte</h1>
+
+<p>
+  A linguagem fonte é uma linguagem imperativa estruturada, inspirada em Pascal e C,
+  com palavras-chave em português. Programas têm estrutura de bloco explícita delimitada
+  por <code>programa</code> / <code>fimprog</code>, e cada comando termina obrigatoriamente
+  com ponto final (<code>.</code>).
+</p>
+
+<h2>2.1 Tipos de dados</h2>
+<table>
+  <tr><th>Tipo na linguagem</th><th>Equivalente em C</th><th>Exemplo de literal</th></tr>
+  <tr><td><code>inteiro</code></td><td><code>int</code></td><td><code>42</code></td></tr>
+  <tr><td><code>decimal</code></td><td><code>double</code></td><td><code>3.14</code></td></tr>
+  <tr><td><code>texto</code></td><td><code>char*</code></td><td><code>"olá mundo"</code></td></tr>
+</table>
+
+<h2>2.2 Palavras reservadas</h2>
+<table>
+  <tr><th>Palavra</th><th>Significado</th></tr>
+  <tr><td><code>programa</code> / <code>fimprog</code></td><td>Delimitadores do programa</td></tr>
+  <tr><td><code>inteiro</code> / <code>decimal</code> / <code>texto</code></td><td>Declaração de variáveis</td></tr>
+  <tr><td><code>se</code> / <code>senao</code></td><td>Condicional if/else</td></tr>
+  <tr><td><code>enquanto</code></td><td>Laço while</td></tr>
+  <tr><td><code>faca</code></td><td>Laço do-while (junto com <code>enquanto</code>)</td></tr>
+  <tr><td><code>para</code></td><td>Laço for</td></tr>
+  <tr><td><code>leia</code></td><td>Entrada de dados (scanf)</td></tr>
+  <tr><td><code>escreva</code></td><td>Saída de dados (printf)</td></tr>
+  <tr><td><code>verdadeiro</code> / <code>falso</code></td><td>Literais booleanos (1 / 0 em C)</td></tr>
+</table>
+
+<h2>2.3 Operadores</h2>
+<table>
+  <tr><th>Categoria</th><th>Símbolos</th></tr>
+  <tr><td>Aritméticos</td><td><code>+</code> &nbsp; <code>-</code> &nbsp; <code>*</code> &nbsp; <code>/</code></td></tr>
+  <tr><td>Relacionais</td><td><code>&lt;</code> &nbsp; <code>&gt;</code> &nbsp; <code>&lt;=</code> &nbsp; <code>&gt;=</code> &nbsp; <code>==</code> &nbsp; <code>!=</code></td></tr>
+  <tr><td>Atribuição</td><td><code>:=</code></td></tr>
+</table>
+
+<h2>2.4 Estrutura de um programa</h2>
+<pre>
+programa
+
+  // declarações de variáveis
+  inteiro x.
+  decimal media.
+
+  // comandos
+  leia(x).
+  media := x / 2.
+  escreva(media).
+
+fimprog.
+</pre>
+
+
+<!-- ════════ 3. GRAMÁTICA FORMAL ════════ -->
+<h1>3. Gramática Formal</h1>
+
+<h2>3.1 Gramática livre de contexto</h2>
+<p>A gramática abaixo descreve formalmente a linguagem. Ela foi projetada
+sem recursividade à esquerda nas produções de expressão, viabilizando o parser descendente recursivo.</p>
+
+<pre>
+prog      → 'programa' bloco 'fimprog' '.'
+
+bloco     → cmd bloco
+           | ε
+
+cmd       → declara
+           | cmdAtrib
+           | cmdSe
+           | cmdEnquanto
+           | cmdFaca
+           | cmdPara
+           | cmdLeia
+           | cmdEscreva
+
+declara   → tipo ID '.'
+
+tipo      → 'inteiro' | 'decimal' | 'texto'
+
+cmdAtrib  → ID ':=' expr '.'
+
+cmdSe     → 'se' '(' exprRel ')' '{' bloco '}' senaoOpt
+
+senaoOpt  → 'senao' '{' bloco '}'
+           | ε
+
+cmdEnquanto → 'enquanto' '(' exprRel ')' '{' bloco '}'
+
+cmdFaca   → 'faca' '{' bloco '}' 'enquanto' '(' exprRel ')' '.'
+
+cmdPara   → 'para' '(' cmdAtrib* ';' exprRel ';' cmdAtrib* ')' '{' bloco '}'
+            (* sem ponto final na atribuição interna ao para)
+
+cmdLeia   → 'leia' '(' ID ')' '.'
+
+cmdEscreva → 'escreva' '(' conteudo ')' '.'
+
+conteudo  → TEXTO_LIT | expr
+
+exprRel   → expr op_rel expr
+
+op_rel    → '<' | '>' | '<=' | '>=' | '==' | '!='
+
+expr      → termo expr'
+expr'     → '+' termo expr'
+           | '-' termo expr'
+           | ε
+
+termo     → fator termo'
+termo'    → '*' fator termo'
+           | '/' fator termo'
+           | ε
+
+fator     → NUM_INT
+           | NUM_DEC
+           | VERDADEIRO
+           | FALSO
+           | ID
+           | '(' expr ')'
+</pre>
+
+<h2>3.2 Observações sobre a gramática</h2>
+<ul>
+  <li>A recursividade à esquerda em <code>expr</code> e <code>termo</code> foi eliminada
+      através da introdução de <code>expr'</code> e <code>termo'</code>, tornando a gramática
+      LL(1) compatível com parser descendente recursivo.</li>
+  <li>O look-ahead de 1 token (LL(1)) é suficiente para decidir qual produção aplicar
+      em todos os pontos da gramática.</li>
+  <li>O terminador de comando <code>.</code> é obrigatório em todos os comandos,
+      exceto nas atribuições internas ao <code>para</code>.</li>
+</ul>
+
+
+<!-- ════════ 4. ANÁLISE LÉXICA ════════ -->
+<h1>4. Análise Léxica</h1>
+
+<h2>4.1 Funcionamento</h2>
+<p>
+  O analisador léxico (<code>lexico.py</code>) lê o código-fonte caractere por caractere,
+  mantendo três ponteiros de estado: posição atual (<code>pos</code>), número da linha
+  (<code>linha</code>) e look-ahead de um caractere (<code>_proximo()</code>).
+</p>
+<p>
+  O método principal <code>_proximo_token()</code> descarta espaços e comentários de linha
+  (<code>//</code>) e, com base no caractere corrente, delega para um dos três reconhecedores:
+</p>
+<ul>
+  <li><strong><code>_le_palavra()</code></strong> — lê sequências alfanuméricas e verifica
+      se são palavra reservada (via dicionário <code>PALAVRAS_RESERVADAS</code>) ou identificador.</li>
+  <li><strong><code>_le_numero()</code></strong> — lê inteiros (<code>[0-9]+</code>) e
+      decimais (<code>[0-9]+'.'[0-9]+</code>).</li>
+  <li><strong><code>_le_operador()</code></strong> — reconhece operadores de um ou dois
+      caracteres usando look-ahead para distinguir <code>&lt;</code> de <code>&lt;=</code>,
+      por exemplo.</li>
+</ul>
+
+<h2>4.2 Tokens reconhecidos</h2>
+<table>
+  <tr><th>Categoria</th><th>Tokens</th></tr>
+  <tr><td>Palavras reservadas</td><td>PROGRAMA, FIMPROG, INTEIRO, DECIMAL, TEXTO_TIPO, SE, SENAO, ENQUANTO, FACA, PARA, LEIA, ESCREVA, VERDADEIRO, FALSO</td></tr>
+  <tr><td>Literais</td><td>NUM_INT, NUM_DEC, TEXTO_LIT</td></tr>
+  <tr><td>Identificador</td><td>ID</td></tr>
+  <tr><td>Operadores aritméticos</td><td>MAIS, MENOS, MULT, DIV</td></tr>
+  <tr><td>Operadores relacionais</td><td>MENOR, MAIOR, MENOR_IG, MAIOR_IG, IGUAL, DIF</td></tr>
+  <tr><td>Atribuição</td><td>ATRIB (<code>:=</code>)</td></tr>
+  <tr><td>Delimitadores</td><td>ABRE_PAR, FECHA_PAR, ABRE_CHAVE, FECHA_CHAVE, PONTO, PONTO_VIRG</td></tr>
+  <tr><td>Especial</td><td>EOF</td></tr>
+</table>
+
+<h2>4.3 Tratamento de erros léxicos</h2>
+<p>
+  Erros são registrados na lista <code>self.erros</code> e impressos imediatamente.
+  Após registrar o erro, o léxico tenta recuperar chamando <code>_proximo_token()</code>
+  novamente (recuperação por pânico simples), permitindo que múltiplos erros sejam
+  reportados em uma única execução.
+</p>
+<div class="callout">
+  Exemplo de erro léxico:<br>
+  <code>ERRO LÉXICO na linha 5: Caractere '@' não reconhecido</code>
+</div>
+
+
+<!-- ════════ 5. ANÁLISE SINTÁTICA ════════ -->
+<h1>5. Análise Sintática</h1>
+
+<h2>5.1 Estratégia: parser descendente recursivo</h2>
+<p>
+  O analisador sintático (<code>sintatico.py</code>) implementa um <strong>parser
+  descendente recursivo LL(1)</strong>, com uma função Python por regra gramatical.
+  O método <code>_consome(tipo_esperado)</code> verifica o token corrente, avança o
+  ponteiro e retorna o token consumido — ou lança <code>ErroSintatico</code> se o
+  tipo não corresponder.
+</p>
+
+<h2>5.2 Árvore de derivação (AST)</h2>
+<p>
+  Cada função de regra retorna um objeto <code>No</code>, compondo a árvore de baixo para cima.
+  A classe <code>No</code> possui quatro atributos:
+</p>
+<table>
+  <tr><th>Atributo</th><th>Descrição</th></tr>
+  <tr><td><code>tipo</code></td><td>Nome da regra ou token (ex.: <code>'cmdSe'</code>, <code>'ID'</code>)</td></tr>
+  <tr><td><code>filhos</code></td><td>Lista de nós filhos (nós internos)</td></tr>
+  <tr><td><code>valor</code></td><td>Texto do token (somente nas folhas: ID, NUM_INT, etc.)</td></tr>
+  <tr><td><code>linha</code></td><td>Número da linha no fonte (para mensagens de erro)</td></tr>
+</table>
+
+<p>Exemplo de árvore para <code>resultado := a + b * 2.</code>:</p>
+<pre>
+[cmdAtrib]
+  [ID] "resultado"
+  [expr]
+    [ID] "a"
+    [OP] "+"
+    [termo]
+      [ID] "b"
+      [OP] "*"
+      [NUM_INT] "2"
+</pre>
+
+<h2>5.3 Tratamento de erros sintáticos</h2>
+<p>
+  Ao encontrar um token inesperado, o método <code>_erro()</code> registra a mensagem,
+  imprime e lança <code>ErroSintatico</code>. O método <code>analisar()</code> captura
+  a exceção e retorna <code>None</code>, sinalizando ao <code>main.py</code> que a
+  compilação deve ser interrompida.
+</p>
+<div class="callout">
+  Exemplo de erro sintático:<br>
+  <code>ERRO SINTÁTICO na linha 8: Esperado 'PONTO', encontrado 'fimprog' (FIMPROG)</code>
+</div>
+
+
+<!-- ════════ 6. GERAÇÃO DE CÓDIGO ════════ -->
+<h1>6. Geração de Código C</h1>
+
+<h2>6.1 Estratégia em duas passagens</h2>
+<p>O gerador (<code>gerador.py</code>) percorre a AST em <strong>duas passagens</strong>:</p>
+<ol>
+  <li><strong>1ª passagem — <code>_coletar_tipos()</code>:</strong> percorre toda a árvore
+      coletando declarações de variáveis e montando a tabela de símbolos
+      <code>{ nome → tipo_fonte }</code>. Necessário para inferir o formato
+      de <code>printf</code>/<code>scanf</code> correto para cada variável.</li>
+  <li><strong>2ª passagem — <code>_gerar_prog()</code>:</strong> gera o código C linha a linha,
+      mantendo um contador de indentação (<code>self._indent</code>) incrementado/decrementado
+      nos métodos <code>_abre_bloco()</code> e <code>_fecha_bloco()</code>.</li>
+</ol>
+
+<h2>6.2 Tabela de símbolos</h2>
+<p>
+  A tabela é um dicionário simples <code>{ str → str }</code> mapeando nome da variável
+  para seu tipo na linguagem fonte (<code>'inteiro'</code>, <code>'decimal'</code> ou
+  <code>'texto'</code>). Ela é usada para selecionar automaticamente o especificador de
+  formato correto (<code>%d</code>, <code>%lf</code>, <code>%s</code>) e decidir se o
+  operador de endereço <code>&</code> deve ser usado no <code>scanf</code>.
+</p>
+
+<h2>6.3 Mapeamento de construções</h2>
+<table>
+  <tr><th>Linguagem fonte</th><th>Código C gerado</th></tr>
+  <tr><td><code>inteiro x.</code></td><td><code>int x;</code></td></tr>
+  <tr><td><code>decimal media.</code></td><td><code>double media;</code></td></tr>
+  <tr><td><code>texto nome.</code></td><td><code>char* nome;</code></td></tr>
+  <tr><td><code>x := expr.</code></td><td><code>x = expr;</code></td></tr>
+  <tr><td><code>leia(x).</code></td><td><code>scanf("%d", &amp;x);</code></td></tr>
+  <tr><td><code>escreva("msg").</code></td><td><code>printf("msg\n");</code></td></tr>
+  <tr><td><code>escreva(x).</code></td><td><code>printf("%d\n", x);</code></td></tr>
+  <tr><td><code>se (c) { ... } senao { ... }</code></td><td><code>if (c) { ... } else { ... }</code></td></tr>
+  <tr><td><code>enquanto (c) { ... }</code></td><td><code>while (c) { ... }</code></td></tr>
+  <tr><td><code>faca { ... } enquanto (c).</code></td><td><code>do { ... } while (c);</code></td></tr>
+  <tr><td><code>para (i := 0; i &lt; 5; i := i + 1) { ... }</code></td><td><code>for (i = 0; i &lt; 5; i = (i + 1)) { ... }</code></td></tr>
+  <tr><td><code>verdadeiro</code> / <code>falso</code></td><td><code>1</code> / <code>0</code></td></tr>
+</table>
+
+
+<!-- ════════ 7. ESTRUTURA DOS ARQUIVOS ════════ -->
+<h1>7. Estrutura dos Arquivos</h1>
+
+<pre>
+Projeto-compiladores/
+├── compilador/
+│   ├── tokens.py       — definição dos tipos de tokens e classe Token
+│   ├── lexico.py       — analisador léxico (tokenizador)
+│   ├── sintatico.py    — parser descendente recursivo + classe No (AST)
+│   ├── gerador.py      — gerador de código C
+│   ├── main.py         — ponto de entrada; orquestra as três fases
+│   └── teste.prog      — programa de teste cobrindo todos os recursos
+└── .vscode/
+    └── settings.json   — configuração de encoding UTF-8
+</pre>
+
+<table>
+  <tr><th>Arquivo</th><th>Linhas</th><th>Responsabilidade</th></tr>
+  <tr><td><code>tokens.py</code></td><td>~97</td><td>Constantes de tipos de token, dicionário de palavras reservadas e classe <code>Token</code></td></tr>
+  <tr><td><code>lexico.py</code></td><td>~296</td><td>Classe <code>Lexico</code> com tokenização completa sem regex</td></tr>
+  <tr><td><code>sintatico.py</code></td><td>~400</td><td>Classe <code>No</code> (AST) e classe <code>Parser</code> com uma função por regra gramatical</td></tr>
+  <tr><td><code>gerador.py</code></td><td>~287</td><td>Classe <code>Gerador</code> com geração de código C em duas passagens</td></tr>
+  <tr><td><code>main.py</code></td><td>~83</td><td>Orquestração das fases e saída do compilador</td></tr>
+</table>
+
+
+<!-- ════════ 8. EXEMPLO COMPLETO ════════ -->
+<h1>8. Exemplo Completo</h1>
+
+<h2>Programa fonte (teste.prog)</h2>
+<pre>
+// Programa de teste — cobre todos os tokens da linguagem
+programa
+
+// Declarações de variáveis (3 tipos)
+inteiro a.
+inteiro b.
+inteiro resultado.
+decimal media.
+texto mensagem.
+
+// Entrada de dados
+escreva("Digite o primeiro numero").
+leia(a).
+escreva("Digite o segundo numero").
+leia(b).
+
+// Atribuição e expressão matemática com precedência
+resultado := a + b * 2.
+media := (a + b) / 2.
+
+// Estrutura if/else
+se (a > b) {
+    escreva("A e maior").
+    resultado := a - b.
+} senao {
+    escreva("B e maior ou igual").
+    resultado := b - a.
+}
+
+// if encadeado
+se (resultado > 10) {
+    escreva("Grande").
+} senao {
+    se (resultado > 5) {
+        escreva("Medio").
+    } senao {
+        escreva("Pequeno").
+    }
+}
+
+// Estrutura enquanto (while)
+inteiro i.
+i := 0.
+enquanto (i &lt; resultado) {
+    escreva(i).
+    i := i + 1.
+}
+
+// Estrutura faca/enquanto (do-while)
+faca {
+    escreva("Pelo menos uma vez").
+    i := i - 1.
+} enquanto (i > 0).
+
+// Estrutura para (for)
+inteiro j.
+para (j := 0 ; j &lt; 5 ; j := j + 1) {
+    escreva(j).
+}
+
+// Operadores relacionais variados
+se (a &lt;= b) { escreva("a menor ou igual b"). }
+se (a >= b) { escreva("a maior ou igual b"). }
+se (a == b) { escreva("iguais"). }
+se (a != b) { escreva("diferentes"). }
+
+fimprog.
+</pre>
+
+<h2>Código C gerado (teste.c)</h2>
+<pre>
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+int main(void)
+{
+    int a;
+    int b;
+    int resultado;
+    double media;
+    char* mensagem;
+    printf("Digite o primeiro numero\n");
+    scanf("%d", &a);
+    printf("Digite o segundo numero\n");
+    scanf("%d", &b);
+    resultado = (a + (b * 2));
+    media = ((a + b) / 2);
+    if (a > b)
+    {
+        printf("A e maior\n");
+        resultado = (a - b);
+    }
+    else
+    {
+        printf("B e maior ou igual\n");
+        resultado = (b - a);
+    }
+    if (resultado > 10)
+    {
+        printf("Grande\n");
+    }
+    else
+    {
+        if (resultado > 5)
+        {
+            printf("Medio\n");
+        }
+        else
+        {
+            printf("Pequeno\n");
+        }
+    }
+    int i;
+    i = 0;
+    while (i &lt; resultado)
+    {
+        printf("%d\n", i);
+        i = (i + 1);
+    }
+    do
+    {
+        printf("Pelo menos uma vez\n");
+        i = (i - 1);
+    }
+    while (i > 0);
+    int j;
+    for (j = 0; j &lt; 5; j = (j + 1))
+    {
+        printf("%d\n", j);
+    }
+    if (a &lt;= b)
+    {
+        printf("a menor ou igual b\n");
+    }
+    if (a >= b)
+    {
+        printf("a maior ou igual b\n");
+    }
+    if (a == b)
+    {
+        printf("iguais\n");
+    }
+    if (a != b)
+    {
+        printf("diferentes\n");
+    }
+
+    return 0;
+}
+</pre>
+
+
+<!-- ════════ 9. COMO EXECUTAR ════════ -->
+<h1>9. Como Executar</h1>
+
+<h2>Pré-requisitos</h2>
+<ul>
+  <li>Python 3.10 ou superior</li>
+  <li>Sem dependências externas (bibliotecas padrão apenas)</li>
+</ul>
+
+<h2>Execução</h2>
+<pre>
+# Dentro da pasta compilador/
+python main.py teste.prog
+</pre>
+
+<p>A saída no terminal inclui:</p>
+<ol>
+  <li>Lista completa de tokens reconhecidos pelo léxico</li>
+  <li>Árvore de derivação (AST) impressa com indentação visual</li>
+  <li>Código C gerado, impresso na tela</li>
+  <li>Arquivo <code>.c</code> gravado no mesmo diretório do arquivo fonte</li>
+</ol>
+
+<h2>Compilando e executando o código C gerado</h2>
+<pre>
+gcc teste.c -o teste
+./teste
+</pre>
+
+<h2>Exemplo de saída do compilador</h2>
+<pre>
+Compilando: teste.prog
+Tamanho: 1024 caracteres
+
+==================================================
+               LISTA DE TOKENS
+==================================================
+  Linha    Tipo             Valor
+--------------------------------------------------
+  1        PROGRAMA         'programa'
+  4        INTEIRO          'inteiro'
+  4        ID               'a'
+  ...
+==================================================
+
+==================================================
+            ÁRVORE DE DERIVAÇÃO
+==================================================
+[prog]
+  [bloco]
+    [declara]
+      [tipo] "inteiro"
+      [ID] "a"
+    ...
+==================================================
+
+Análise sintática concluída com sucesso.
+Código C gerado em: teste.c
+</pre>
+
+
+<!-- ════════ 10. CONCLUSÃO ════════ -->
+<h1>10. Conclusão</h1>
+
+<p>
+  O compilador implementado cobre o ciclo completo de tradução de uma linguagem de alto nível
+  para código C, passando pelas fases de análise léxica, análise sintática e geração de código.
+  Todos os recursos da gramática projetada foram implementados e validados com o programa de teste,
+  que exercita os três tipos de dados, todas as estruturas de controle, operadores aritméticos e
+  relacionais, entrada e saída de dados.
+</p>
+
+<p>Pontos de destaque da implementação:</p>
+<ul>
+  <li><strong>Sem dependências externas</strong> — léxico implementado caractere a caractere, sem regex.</li>
+  <li><strong>Parser LL(1)</strong> — gramática sem recursividade à esquerda, uma função por regra.</li>
+  <li><strong>Geração em duas passagens</strong> — coleta de tipos seguida de geração, garantindo
+      <code>printf</code>/<code>scanf</code> corretos para cada tipo.</li>
+  <li><strong>Relatório de erros com número de linha</strong> — em todas as fases do compilador.</li>
+</ul>
+
+</div><!-- /conteudo -->
+</body>
+</html>
